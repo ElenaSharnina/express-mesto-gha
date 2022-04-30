@@ -1,14 +1,34 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const app = express();
-const {PORT = 3000} = process.env;
+const bodyParser = require('body-parser');
+const userRouter = require('./routes/users');
 
-mongoose.connect('mongodb://localhost:27017/mestodb', {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-    useFindAndModify: false
+const { PORT = 3000 } = process.env;
+
+const app = express();
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use('/users', userRouter);
+
+app.use((req, res, next) => {
+  req.user = {
+    _id: '626d8ace1abf42b18638adff',
+  };
+
+  next();
 });
 
-app.listen(PORT, () => {
-  console.log(`Cлушаем ${PORT} порт`);
-})
+async function main() {
+  mongoose.connect('mongodb://localhost:27017/mestodb', {
+    useNewUrlParser: true,
+    useUnifiedTopology: false,
+  });
+
+  app.listen(PORT, () => {
+    // eslint-disable-next-line no-console
+    console.log(`Cлушаем ${PORT} порт`);
+  });
+}
+main();
