@@ -30,7 +30,7 @@ module.exports.deleteCard = (req, res) => {
         res.status(404).send({ message: 'Удаление карточки с несуществующим в БД id' });
       }
       Card.findByIdAndRemove(req.params.cardId)
-        .then(() => res.status(200).send())
+        .then((delcard) => res.status(200).send(delcard))
         .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
     })
     .catch(() => res.status(400).send({ message: 'Карточка не найдена' }));
