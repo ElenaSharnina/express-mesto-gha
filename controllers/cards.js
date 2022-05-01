@@ -29,9 +29,9 @@ module.exports.deleteCard = (req, res) => {
       if (!card) {
         res.status(404).send({ message: 'Удаление карточки с несуществующим в БД id' });
       }
-      res.send();
+      res.status(200).send();
     })
-    .catch(() => res.status(404).send({ message: 'Карточка не найдена' }));
+    .catch(() => res.status(400).send({ message: 'Карточка не найдена' }));
 };
 
 module.exports.likeCard = (req, res) => {
