@@ -24,12 +24,14 @@ module.exports.createCard = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.id)
+  Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
         res.status(404).send({ message: 'Удаление карточки с несуществующим в БД id' });
       }
-      res.status(200).send();
+      Card.findByIdAndRemove(req.params.cardId)
+        .then(() => res.status(200).send())
+        .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
     })
     .catch(() => res.status(400).send({ message: 'Карточка не найдена' }));
 };
