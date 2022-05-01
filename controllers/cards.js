@@ -35,7 +35,12 @@ module.exports.likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true },
   )
-    .then((card) => res.send({ data: card }))
+    .then((card) => {
+      if (!card) {
+        res.status(404).send({ message: 'Добавление лайка с несуществующим в БД id карточки' });
+      }
+      res.send({ data: card });
+    })
     .catch(() => res.status(400).send({ message: 'Произошла ошибка' }));
 };
 
