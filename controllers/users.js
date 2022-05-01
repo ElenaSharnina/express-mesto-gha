@@ -9,7 +9,7 @@ module.exports.getUsers = (req, res) => {
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.id)
     .then((user) => res.send({ data: user }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(404).send({ message: 'Произошла ошибка' }));
 };
 
 module.exports.createUser = (req, res) => {
@@ -17,7 +17,7 @@ module.exports.createUser = (req, res) => {
 
   User.create({ name, about, avatar })
     .then((user) => res.send({ data: user }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(400).send({ message: 'Произошла ошибка' }));
 };
 // с вебинара
 // module.exports.createUser = async (req, res) => {
@@ -49,7 +49,7 @@ module.exports.updateAvatar = (req, res) => {
     },
   )
     .then((user) => res.send({ data: user }))
-    .catch(() => res.send({ message: 'Данные не прошли валидацию. Либо произошло что-то совсем немыслимое' }));
+    .catch(() => res.status(400).send({ message: 'Данные не прошли валидацию. Либо произошло что-то совсем немыслимое' }));
 };
 
 module.exports.updateProfileInfo = (req, res) => {
@@ -64,5 +64,5 @@ module.exports.updateProfileInfo = (req, res) => {
     },
   )
     .then((user) => res.send({ data: user }))
-    .catch(() => res.send({ message: 'Данные не прошли валидацию. Либо произошло что-то совсем немыслимое' }));
+    .catch(() => res.status(400).send({ message: 'Данные не прошли валидацию. Либо произошло что-то совсем немыслимое' }));
 };
