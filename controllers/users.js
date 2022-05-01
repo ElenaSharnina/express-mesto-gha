@@ -7,9 +7,17 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUserById = (req, res) => {
-  User.findById(req.params.id)
-    .then((user) => res.send({ data: user }))
-    .catch(() => res.status(404).send({ message: 'Произошла ошибка' }));
+  User.findById(req.params.userId)
+    .then((user) => res.status(200).send({ data: user }))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({
+          message: 'Переданы некорректные данные',
+        });
+        return;
+      }
+      res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
+    });
 };
 
 module.exports.createUser = (req, res) => {
