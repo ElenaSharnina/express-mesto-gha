@@ -11,8 +11,9 @@ module.exports.getUserById = (req, res) => {
     .then((user) => {
       if (!user) {
         res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
+      } else {
+        res.status(200).send(user);
       }
-      res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -30,28 +31,18 @@ module.exports.createUser = (req, res) => {
 
   User.create({ name, about, avatar })
     .then((user) => res.send({ data: user }))
-    .catch(() => res.status(400).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Некорректные данные' });
+      } else {
+        res.status(500).send({ message: 'Что-то пошло не так' });
+      }
+    });
 };
-// с вебинара
-// module.exports.createUser = async (req, res) => {
-//   try {
-//     const user = new User(req.body);
-//     res.status(201).send(await user.save());
-//   } catch (err) {
-//     if (err.errors.name.name === "ValidationError") {
-//       res.status(400).send({
-//         message: "Ошибка в веденных данных",
-//         ...err,
-//       })
-//     };
-//     res.status(500).send({
-//       message: "Произошла ошибка в работе сервера",
-//       err,
-//     });
-//   }
-// }
+
 module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
+
   User.findByIdAndUpdate(
     req.user._id,
     { avatar },
@@ -62,7 +53,13 @@ module.exports.updateAvatar = (req, res) => {
     },
   )
     .then((user) => res.send({ data: user }))
-    .catch(() => res.status(400).send({ message: 'Данные не прошли валидацию. Либо произошло что-то совсем немыслимое' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Некорректные данные' });
+      } else {
+        res.status(500).send({ message: 'Что-то пошло не так' });
+      }
+    });
 };
 
 module.exports.updateProfileInfo = (req, res) => {
@@ -77,5 +74,11 @@ module.exports.updateProfileInfo = (req, res) => {
     },
   )
     .then((user) => res.send({ data: user }))
-    .catch(() => res.status(400).send({ message: 'Данные не прошли валидацию. Либо произошло что-то совсем немыслимое' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Некорректные данные' });
+      } else {
+        res.status(500).send({ message: 'Что-то пошло не так' });
+      }
+    });
 };

@@ -28,12 +28,19 @@ module.exports.deleteCard = (req, res) => {
     .then((card) => {
       if (!card) {
         res.status(404).send({ message: 'Удаление карточки с несуществующим в БД id' });
+      } else {
+        Card.findByIdAndRemove(req.params.cardId)
+          .then((delcard) => res.status(200).send(delcard))
+          .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
       }
-      Card.findByIdAndRemove(req.params.cardId)
-        .then((delcard) => res.status(200).send(delcard))
-        .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
     })
-    .catch(() => res.status(400).send({ message: 'Карточка не найдена' }));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Невалидный id ' });
+      } else {
+        res.status(500).send({ message: 'Произошла ошибка' });
+      }
+    });
 };
 
 module.exports.likeCard = (req, res) => {
@@ -45,10 +52,17 @@ module.exports.likeCard = (req, res) => {
     .then((card) => {
       if (!card) {
         res.status(404).send({ message: 'Добавление лайка с несуществующим в БД id карточки' });
+      } else {
+        res.send({ data: card });
       }
-      res.send({ data: card });
     })
-    .catch(() => res.status(400).send({ message: 'Карточка не найдена' }));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Невалидный id ' });
+      } else {
+        res.status(500).send({ message: 'Произошла ошибка' });
+      }
+    });
 };
 
 module.exports.dislikeCard = (req, res) => {
@@ -60,8 +74,15 @@ module.exports.dislikeCard = (req, res) => {
     .then((card) => {
       if (!card) {
         res.status(404).send({ message: 'Удаление лайка с несуществующим в БД id карточки' });
+      } else {
+        res.send({ data: card });
       }
-      res.send({ data: card });
     })
-    .catch(() => res.status(400).send({ message: 'Карточка не найдена' }));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Невалидный id ' });
+      } else {
+        res.status(500).send({ message: 'Произошла ошибка' });
+      }
+    });
 };
