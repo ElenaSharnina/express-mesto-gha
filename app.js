@@ -3,6 +3,10 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const userRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
+const {
+  createUser, login,
+} = require('./controllers/users');
+const auth = require('./middlewares/auth');
 
 const { PORT = 3000 } = process.env;
 
@@ -11,16 +15,16 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '626d8ace1abf42b18638adff',
-  };
+app.post('/signup', createUser);
+app.post('/signin', login);
 
-  next();
-});
+// app.use('/*', (req, res) => {
+//   res.status(403).send({ message: 'Нет доступа, необходимо зарегистрироваться' });
+// });
 
-app.use('/users', userRouter);
-app.use('/cards', cardsRouter);
+app.use('/users', auth, userRouter);
+app.use('/cards', auth, cardsRouter);
+
 // Обработка неправильного пути
 app.use('/*', (req, res) => {
   res.status(404).send({ message: 'Страница не найдена' });
@@ -33,7 +37,6 @@ async function main() {
   });
 
   app.listen(PORT, () => {
-    // eslint-disable-next-line no-console
     console.log(`Cлушаем ${PORT} порт`);
   });
 }

@@ -1,9 +1,13 @@
 const Card = require('../models/card');
+const BadRequestError = require('../errors/bad-request-error');
+const InternalServerError = require('../errors/internal-server-error');
+const NotFoundError = require('../errors/not-found-error');
 
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => { throw new InternalServerError('Что-то пошло не так...'); })
+    .catch(next);
 };
 
 module.exports.createCard = (req, res) => {
@@ -14,12 +18,8 @@ module.exports.createCard = (req, res) => {
     .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({
-          message: 'Длина данных должна быть от 2-х до 30-ти символов',
-        });
-        return;
-      }
-      res.status(500).send({ message: 'Что-то пошло не так' });
+        throw new BadRequestError('Длина данных должна быть от 2-х до 30-ти символов');
+      } else { throw new InternalServerError('Что-то пошло не так...'); }
     });
 };
 
@@ -27,18 +27,20 @@ module.exports.deleteCard = (req, res) => {
   Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
-        res.status(404).send({ message: 'Удаление карточки с несуществующим в БД id' });
+        throw new NotFoundError('Удаление карточки с несуществующим в БД id');
       } else {
         Card.findByIdAndRemove(req.params.cardId)
           .then((delcard) => res.status(200).send(delcard))
-          .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+          .catch(() => {
+            throw new InternalServerError('Что-то пошло не так...');
+          });
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Невалидный id ' });
+        throw new BadRequestError('Переданы некорректные данные');
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        throw new InternalServerError('Что-то пошло не так...');
       }
     });
 };
@@ -51,16 +53,16 @@ module.exports.likeCard = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(404).send({ message: 'Добавление лайка с несуществующим в БД id карточки' });
+        throw new NotFoundError('Лайк с несуществующим в БД id');
       } else {
         res.send({ data: card });
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Невалидный id ' });
+        throw new BadRequestError('Переданы некорректные данные');
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        throw new InternalServerError('Что-то пошло не так...');
       }
     });
 };
@@ -73,16 +75,16 @@ module.exports.dislikeCard = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(404).send({ message: 'Удаление лайка с несуществующим в БД id карточки' });
+        throw new NotFoundError('Дизлайк карточки с несуществующим в БД id');
       } else {
         res.send({ data: card });
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Невалидный id ' });
+        throw new BadRequestError('Переданы некорректные данные');
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        throw new InternalServerError('Что-то пошло не так...');
       }
     });
 };

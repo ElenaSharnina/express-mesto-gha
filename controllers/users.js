@@ -1,41 +1,79 @@
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const User = require('../models/user');
-// коды с тренажера
+const BadRequestError = require('../errors/bad-request-error');
+const ConflictError = require('../errors/conflict-error');
+const InternalServerError = require('../errors/internal-server-error');
+const NotFoundError = require('../errors/not-found-error');
+const UnauthorizedError = require('../errors/unauthorized-error');
+
+module.exports.login = (req, res, next) => {
+  const { email, password } = req.body;
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      // создадим токен
+      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+      // вернём токен
+      res.send({ token });
+    })
+    .catch(() => {
+      // ошибка аутентификации
+      throw new UnauthorizedError('Неправильные почта или пароль');
+    })
+    .catch(next);
+};
+
+module.exports.getUserInfo = (req, res) => {
+  const {
+    name, about, avatar, email,
+  } = req.body;
+  res.status(200).send({
+    name, about, avatar, email,
+  });
+};
+
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => {
+      throw new InternalServerError('Что-то пошло не так...');
+    });
 };
 
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
+        throw new NotFoundError('Запрашиваемый пользователь не найден');
       } else {
         res.status(200).send(user);
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({
-          message: 'Переданы некорректные данные',
-        });
-        return;
+        throw new BadRequestError('Переданы некорректные данные');
+      } else {
+        throw new InternalServerError('Что-то пошло не так...');
       }
-      res.status(500).send({ message: 'Что-то пошло не так' });
     });
 };
 
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-
-  User.create({ name, about, avatar })
+  const {
+    name, about, avatar, email,
+  } = req.body;
+  bcrypt.hash(req.body.password, 10)
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }))
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Некорректные данные' });
+      if (err.code === 11000) {
+        throw new ConflictError('Пользователь с таким email уже зарегистрированн');
+      } else if (err.name === 'ValidationError') {
+        throw new BadRequestError('Переданы некорректные данные');
       } else {
-        res.status(500).send({ message: 'Что-то пошло не так' });
+        throw new InternalServerError('Что-то пошло не так...');
       }
     });
 };
@@ -55,9 +93,9 @@ module.exports.updateAvatar = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Некорректные данные' });
+        throw new BadRequestError('Переданы некорректные данные');
       } else {
-        res.status(500).send({ message: 'Что-то пошло не так' });
+        throw new InternalServerError('Что-то пошло не так...');
       }
     });
 };
@@ -76,9 +114,9 @@ module.exports.updateProfileInfo = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Некорректные данные' });
+        throw new BadRequestError('Переданы некорректные данные');
       } else {
-        res.status(500).send({ message: 'Что-то пошло не так' });
+        throw new InternalServerError('Что-то пошло не так...');
       }
     });
 };
