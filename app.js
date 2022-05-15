@@ -7,7 +7,7 @@ const cardsRouter = require('./routes/cards');
 const {
   createUser, login,
 } = require('./controllers/users');
-// const auth = require('./middlewares/auth');
+const auth = require('./middlewares/auth');
 
 const regex = /^(http:\/\/www.|https:\/\/www.|ftp:\/\/www.|www.){1}([0-9A-Za-z]+\.)([A-Za-z]){2,3}(\/)?/;
 
@@ -17,14 +17,6 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-app.use((req, res, next) => {
-  req.user = {
-    _id: '5d8b8592978f8bd833ca8133',
-  };
-
-  next();
-});
 
 app.post('/signup', celebrate({
   body: Joi.object().keys({
@@ -45,8 +37,8 @@ app.post('/signin', celebrate({
 
 // app.use(auth);
 
-app.use('/users', userRouter);
-app.use('/cards', cardsRouter);
+app.use('/users', auth, userRouter);
+app.use('/cards', auth, cardsRouter);
 
 // Обработка неправильного пути
 app.use('/*', (req, res) => {

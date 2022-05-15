@@ -14,13 +14,13 @@ module.exports.login = (req, res, next) => {
       // создадим токен
       const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
       // вернём токен
-      // res.cookie('jwt', token, {
-      //   maxAge: 3600000 * 24 * 7,
-      //   httpOnly: true,
-      //   sameSite: 'none',
-      //   secure: true,
-      // })
-      res.status(200).send({ token });
+      res.cookie('jwt', token, {
+        maxAge: 3600000 * 24 * 7,
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true,
+      })
+        .send({ _id: user._id });
     })
     .catch(() => {
       // ошибка аутентификации
