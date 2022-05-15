@@ -1,7 +1,7 @@
 const Card = require('../models/card');
 const BadRequestError = require('../errors/bad-request-error');
 const InternalServerError = require('../errors/internal-server-error');
-const NotFoundError = require('../errors/not-found-error');
+// const NotFoundError = require('../errors/not-found-error');
 
 module.exports.getCards = (req, res, next) => {
   Card.find({})
@@ -28,13 +28,13 @@ module.exports.deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
-        throw new NotFoundError('Удаление карточки с несуществующим в БД id');
-      } else {
+        res.status(404).send({ message: 'Лайк с несуществующим в БД id' });
+        // throw new NotFoundError('Удаление карточки с несуществующим в БД id');
+      } else if (JSON.stringify(req.user._id) === JSON.stringify(card.owner)) {
         Card.findByIdAndRemove(req.params.cardId)
-          .then((delcard) => res.status(200).send(delcard))
-          .catch(() => {
-            throw new InternalServerError('Что-то пошло не так...');
-          });
+          .then((delcard) => res.status(200).send(delcard));
+      } else {
+        res.status(403).send({ message: 'Удаление карточки другого пользователя' });
       }
     })
     .catch((err) => {
