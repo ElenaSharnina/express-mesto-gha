@@ -2,14 +2,14 @@ const userRouter = require('express').Router();
 const bodyParser = require('body-parser');
 const { celebrate, Joi } = require('celebrate');
 const {
-  getUsers, getUserById, updateAvatar, updateProfileInfo, getUserInfo,
+  getUsers, getUserById, updateAvatar, updateProfileInfo, getUserInfo, createUser,
 } = require('../controllers/users');
 
 const regex = /^(http:\/\/www.|https:\/\/www.|ftp:\/\/www.|www.){1}([0-9A-Za-z]+\.)([A-Za-z]){2,3}(\/)?/;
 
 userRouter.use(bodyParser.json());
 userRouter.use(bodyParser.urlencoded({ extended: true }));
-
+userRouter.post('/', createUser);
 userRouter.get('/', getUsers);
 userRouter.get('/me', getUserInfo);
 userRouter.get('/:userId', celebrate({
