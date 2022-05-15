@@ -7,7 +7,7 @@ const cardsRouter = require('./routes/cards');
 const {
   createUser, login,
 } = require('./controllers/users');
-const auth = require('./middlewares/auth');
+// const auth = require('./middlewares/auth');
 
 const regex = /^(http:\/\/www.|https:\/\/www.|ftp:\/\/www.|www.){1}([0-9A-Za-z]+\.)([A-Za-z]){2,3}(\/)?/;
 
