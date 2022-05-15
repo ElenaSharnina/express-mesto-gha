@@ -12,6 +12,7 @@ const auth = require('./middlewares/auth');
 
 // eslint-disable-next-line max-len
 // const regex = /^(http:\/\/www.|https:\/\/www.|ftp:\/\/www.|www.){1}([0-9A-Za-z]+\.)([A-Za-z]){2,3}(\/)?/;
+const regex2 = /[-a-zA-Z0-9@:%_\+.~#?&\/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/=]*)?/;
 
 const { PORT = 3000 } = process.env;
 
@@ -26,7 +27,7 @@ app.post('/signup', celebrate({
     password: Joi.string().required().min(8),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string(),
+    avatar: Joi.string().pattern(regex2),
   }).unknown(true),
 }), createUser);
 
