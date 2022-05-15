@@ -34,9 +34,9 @@ app.post('/signin', celebrate({
   }),
 }), login);
 
-app.use('/*', (req, res) => {
-  res.status(403).send({ message: 'Нет доступа, необходимо зарегистрироваться' });
-});
+// app.use('/*', (req, res) => {
+//   res.status(403).send({ message: 'Нет доступа, необходимо зарегистрироваться' });
+// });
 
 app.use('/users', auth, userRouter);
 app.use('/cards', auth, cardsRouter);
