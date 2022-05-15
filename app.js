@@ -9,7 +9,8 @@ const {
 } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 
-const regex = /^(http:\/\/www.|https:\/\/www.|ftp:\/\/www.|www.){1}([0-9A-Za-z]+\.)([A-Za-z]){2,3}(\/)?/;
+// eslint-disable-next-line max-len
+// const regex = /^(http:\/\/www.|https:\/\/www.|ftp:\/\/www.|www.){1}([0-9A-Za-z]+\.)([A-Za-z]){2,3}(\/)?/;
 
 const { PORT = 3000 } = process.env;
 
