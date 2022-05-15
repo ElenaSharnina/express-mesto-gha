@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const BadRequestError = require('../errors/bad-request-error');
@@ -12,7 +12,7 @@ module.exports.login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       // создадим токен
-      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+      const token = { _id: user._id };
       // вернём токен
       res.cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
@@ -20,7 +20,7 @@ module.exports.login = (req, res, next) => {
         sameSite: 'none',
         secure: true,
       })
-        .send({ _id: user._id });
+        .send({ token });
     })
     .catch(() => {
       // ошибка аутентификации
