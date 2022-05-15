@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 // const UnauthorizedError = require('../errors/unauthorized-error');
 
 module.exports = (req, res, next) => {
-  // eslint-disable-next-line max-len
   const { authorization } = req.headers; // через это не проходят автотесты!!!! через куки не работет постман
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
