@@ -63,15 +63,15 @@ module.exports.getUserById = (req, res) => {
     });
 };
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const {
-    name, about, avatar, email,
+    name, about, avatar, email, password,
   } = req.body;
-  bcrypt.hash(req.body.password, 10)
+  bcrypt.hash(password, 10)
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err.code === 11000) {
         throw new ConflictError('Пользователь с таким email уже зарегистрированн');
@@ -80,7 +80,8 @@ module.exports.createUser = (req, res) => {
       } else {
         throw new InternalServerError('Что-то пошло не так...');
       }
-    });
+    })
+    .catch(next);
 };
 
 module.exports.updateAvatar = (req, res) => {

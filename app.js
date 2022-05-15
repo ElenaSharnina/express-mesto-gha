@@ -34,12 +34,10 @@ app.post('/signin', celebrate({
   }),
 }), login);
 
-// app.use('/*', (req, res) => {
-//   res.status(403).send({ message: 'Нет доступа, необходимо зарегистрироваться' });
-// });
+app.use(auth);
 
-app.use('/users', auth, userRouter);
-app.use('/cards', auth, cardsRouter);
+app.use('/users', userRouter);
+app.use('/cards', cardsRouter);
 
 // Обработка неправильного пути
 app.use('/*', (req, res) => {
