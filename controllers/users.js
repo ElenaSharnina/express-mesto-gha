@@ -20,7 +20,7 @@ module.exports.login = (req, res, next) => {
         sameSite: 'none',
         secure: true,
       })
-        .send({ token });
+        .send(token);
     })
     .catch(() => {
       // ошибка аутентификации
