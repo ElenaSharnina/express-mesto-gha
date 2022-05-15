@@ -9,10 +9,7 @@ const {
   createUser, login,
 } = require('./controllers/users');
 const auth = require('./middlewares/auth');
-
-// eslint-disable-next-line max-len
-// const regex = /^(http:\/\/www.|https:\/\/www.|ftp:\/\/www.|www.){1}([0-9A-Za-z]+\.)([A-Za-z]){2,3}(\/)?/;
-const regex2 = /[-a-zA-Z0-9@:%_\+.~#?&\/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/=]*)?/;
+const regexLink = require('./utils/constants');
 
 const { PORT = 3000 } = process.env;
 
@@ -21,13 +18,14 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern(regex2),
+    avatar: Joi.string().pattern(regexLink),
   }).unknown(true),
 }), createUser);
 

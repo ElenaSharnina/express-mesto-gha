@@ -4,10 +4,10 @@ const { celebrate, Joi } = require('celebrate');
 const {
   getUsers, getUserById, updateAvatar, updateProfileInfo, getUserInfo,
 } = require('../controllers/users');
-
+const regexLink = require('../utils/constants');
 // eslint-disable-next-line max-len
 // const regex = /^(http:\/\/www.|https:\/\/www.|ftp:\/\/www.|www.){1}([0-9A-Za-z]+\.)([A-Za-z]){2,3}(\/)?/;
-const regex2 = /[-a-zA-Z0-9@:%_\+.~#?&\/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/=]*)?/;
+// const regex2 = /[-a-zA-Z0-9@:%_\+.~#?&\/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/=]*)?/;
 
 userRouter.use(bodyParser.json());
 userRouter.use(bodyParser.urlencoded({ extended: true }));
@@ -27,7 +27,7 @@ userRouter.patch('/me', celebrate({
 }), updateProfileInfo);
 userRouter.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().pattern(regex2).required(),
+    avatar: Joi.string().pattern(regexLink).required(),
   }),
 }), updateAvatar);
 

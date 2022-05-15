@@ -22,7 +22,6 @@ module.exports.login = (req, res, next) => {
       }).send({ token });
     })
     .catch(() => {
-      // ошибка аутентификации
       // throw new UnauthorizedError('Неправильные почта или пароль');
       res.status(401).send({ message: 'Неправильные почта или пароль' });
     })
