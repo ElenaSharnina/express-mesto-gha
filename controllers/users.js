@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken'); // при пробрасывании ошибок таким образом, тесты ругаются, я их закоммитила
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const BadRequestError = require('../errors/bad-request-error');
