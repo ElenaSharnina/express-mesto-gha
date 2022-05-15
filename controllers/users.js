@@ -78,15 +78,16 @@ module.exports.createUser = (req, res, next) => {
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
-    .then((user) => res.status(200).send({ data: user }))
+    .then(() => res.status(200).send({
+      name, about, avatar, email,
+    }))
     .catch((err) => {
       if (err.code === 11000) {
         throw new ConflictError('Пользователь с таким email уже зарегистрированн');
       } else if (err.name === 'ValidationError') {
         throw new BadRequestError('Переданы некорректные данные');
-      } else {
-        throw new InternalServerError('Что-то пошло не так...');
       }
+      next(err);
     })
     .catch(next);
 };
