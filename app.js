@@ -9,6 +9,8 @@ const {
 } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 
+const regex = /^(http:\/\/www.|https:\/\/www.|ftp:\/\/www.|www.){1}([0-9A-Za-z]+\.)([A-Za-z]){2,3}(\/)?/;
+
 const { PORT = 3000 } = process.env;
 
 const app = express();
@@ -22,7 +24,7 @@ app.post('/signup', celebrate({
     password: Joi.string().required().min(8),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern('^(http:\/\/www.|https:\/\/www.|ftp:\/\/www.|www.){1}([0-9A-Za-z]+\.)([A-Za-z]){2,3}(\/)?'),
+    avatar: Joi.string().pattern(regex),
   }).unknown(true),
 }), createUser);
 app.post('/signin', celebrate({
