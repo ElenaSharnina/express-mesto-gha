@@ -10,7 +10,7 @@ module.exports.getCards = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   console.log(req.user._id);
@@ -20,10 +20,11 @@ module.exports.createCard = (req, res) => {
       if (err.name === 'ValidationError') {
         throw new BadRequestError('Длина данных должна быть от 2-х до 30-ти символов');
       } else { throw new InternalServerError('Что-то пошло не так...'); }
-    });
+    })
+    .catch(next);
 };
 
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
@@ -42,7 +43,8 @@ module.exports.deleteCard = (req, res) => {
       } else {
         throw new InternalServerError('Что-то пошло не так...');
       }
-    });
+    })
+    .catch(next);
 };
 
 module.exports.likeCard = (req, res) => {

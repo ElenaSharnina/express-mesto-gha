@@ -37,15 +37,16 @@ module.exports.getUserInfo = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
     .catch(() => {
       throw new InternalServerError('Что-то пошло не так...');
-    });
+    })
+    .catch(next);
 };
 
-module.exports.getUserById = (req, res) => {
+module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
@@ -60,7 +61,8 @@ module.exports.getUserById = (req, res) => {
       } else {
         throw new InternalServerError('Что-то пошло не так...');
       }
-    });
+    })
+    .catch(next);
 };
 
 module.exports.createUser = (req, res, next) => {
@@ -84,7 +86,7 @@ module.exports.createUser = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.updateAvatar = (req, res) => {
+module.exports.updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
 
   User.findByIdAndUpdate(
@@ -103,10 +105,11 @@ module.exports.updateAvatar = (req, res) => {
       } else {
         throw new InternalServerError('Что-то пошло не так...');
       }
-    });
+    })
+    .catch(next);
 };
 
-module.exports.updateProfileInfo = (req, res) => {
+module.exports.updateProfileInfo = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -124,5 +127,6 @@ module.exports.updateProfileInfo = (req, res) => {
       } else {
         throw new InternalServerError('Что-то пошло не так...');
       }
-    });
+    })
+    .catch(next);
 };

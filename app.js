@@ -27,6 +27,7 @@ app.post('/signup', celebrate({
     avatar: Joi.string().pattern(regex),
   }).unknown(true),
 }), createUser);
+
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
@@ -34,10 +35,10 @@ app.post('/signin', celebrate({
   }),
 }), login);
 
-app.use(auth);
+// app.use(auth);
 
-app.use('/users', userRouter);
-app.use('/cards', cardsRouter);
+app.use('/users', auth, userRouter);
+app.use('/cards', auth, cardsRouter);
 
 // Обработка неправильного пути
 app.use('/*', (req, res) => {
