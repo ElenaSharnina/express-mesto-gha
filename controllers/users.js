@@ -2,10 +2,10 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const BadRequestError = require('../errors/bad-request-error');
-const ConflictError = require('../errors/conflict-error');
+// const ConflictError = require('../errors/conflict-error');
 const InternalServerError = require('../errors/internal-server-error');
-const NotFoundError = require('../errors/not-found-error');
-const UnauthorizedError = require('../errors/unauthorized-error');
+// const NotFoundError = require('../errors/not-found-error');
+// const UnauthorizedError = require('../errors/unauthorized-error');
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
@@ -23,7 +23,8 @@ module.exports.login = (req, res, next) => {
     })
     .catch(() => {
       // ошибка аутентификации
-      throw new UnauthorizedError('Неправильные почта или пароль');
+      // throw new UnauthorizedError('Неправильные почта или пароль');
+      res.status(401).send({ message: 'Неправильные почта или пароль' });
     })
     .catch(next);
 };
@@ -55,7 +56,8 @@ module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Запрашиваемый пользователь не найден');
+        res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
+        // throw new NotFoundError('Запрашиваемый пользователь не найден');
       } else {
         res.status(200).send(user);
       }
@@ -83,9 +85,11 @@ module.exports.createUser = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.code === 11000) {
-        throw new ConflictError('Пользователь с таким email уже зарегистрированн');
+        // throw new ConflictError('Пользователь с таким email уже зарегистрированн');
+        res.status(409).send({ message: 'Пользователь с таким email уже зарегистрированн' });
       } else if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные');
+        // throw new BadRequestError('Переданы некорректные данные');
+        res.status(400).send({ message: 'Переданы некорректные данные' });
       }
       next(err);
     })
