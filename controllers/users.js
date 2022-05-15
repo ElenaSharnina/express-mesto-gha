@@ -23,13 +23,18 @@ module.exports.login = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.getUserInfo = (req, res) => {
-  const {
-    name, about, avatar, email,
-  } = req.body;
-  res.status(200).send({
-    name, about, avatar, email,
-  });
+module.exports.getUserInfo = (req, res, next) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      res.send(user);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        throw new BadRequestError('Переданы некорректные данные');
+      }
+      next(err);
+    })
+    .catch(next);
 };
 
 module.exports.getUsers = (req, res) => {
