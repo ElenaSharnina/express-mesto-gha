@@ -4,13 +4,14 @@ const {
   getCards, createCard, deleteCard, likeCard, dislikeCard,
 } = require('../controllers/cards');
 
-const regex = /^(http:\/\/www.|https:\/\/www.|ftp:\/\/www.|www.){1}([0-9A-Za-z]+\.)([A-Za-z]){2,3}(\/)?/;
+// eslint-disable-next-line max-len
+// const regex = /^(http:\/\/www.|https:\/\/www.|ftp:\/\/www.|www.){1}([0-9A-Za-z]+\.)([A-Za-z]){2,3}(\/)?/;
 
 cardsRouter.get('/', getCards);
 cardsRouter.post('/', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).required(),
-    link: Joi.string().pattern(regex).required(),
+    link: Joi.string().required(),
   }),
 }), createCard);
 cardsRouter.delete('/:cardId', celebrate({
