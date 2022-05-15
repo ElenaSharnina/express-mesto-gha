@@ -19,7 +19,8 @@ module.exports.login = (req, res, next) => {
         httpOnly: true,
         sameSite: 'none',
         secure: true,
-      }).send({ token });
+        // eslint-disable-next-line no-undef
+      }).send({ id: user._id });
     })
     .catch(() => {
       // ошибка аутентификации
