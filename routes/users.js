@@ -19,7 +19,7 @@ userRouter.patch('/me', celebrate({
 }), updateProfileInfo);
 userRouter.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().uri().required(),
+    avatar: Joi.string().pattern('^(http:\/\/www.|https:\/\/www.|ftp:\/\/www.|www.){1}([0-9A-Za-z]+\.)([A-Za-z]){2,3}(\/)?').required(),
   }),
 }), updateAvatar);
 

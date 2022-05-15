@@ -22,7 +22,7 @@ app.post('/signup', celebrate({
     password: Joi.string().required().min(8),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().uri(),
+    avatar: Joi.string().pattern('^(http:\/\/www.|https:\/\/www.|ftp:\/\/www.|www.){1}([0-9A-Za-z]+\.)([A-Za-z]){2,3}(\/)?'),
   }).unknown(true),
 }), createUser);
 app.post('/signin', celebrate({
@@ -32,9 +32,9 @@ app.post('/signin', celebrate({
   }),
 }), login);
 
-// app.use('/*', (req, res) => {
-//   res.status(403).send({ message: 'Нет доступа, необходимо зарегистрироваться' });
-// });
+app.use('/*', (req, res) => {
+  res.status(403).send({ message: 'Нет доступа, необходимо зарегистрироваться' });
+});
 
 app.use('/users', auth, userRouter);
 app.use('/cards', auth, cardsRouter);
