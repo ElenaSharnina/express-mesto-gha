@@ -78,7 +78,8 @@ module.exports.dislikeCard = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        throw new NotFoundError('Дизлайк карточки с несуществующим в БД id');
+        res.status(404).send({ message: 'Лайк с несуществующим в БД id' });
+        // throw new NotFoundError('Дизлайк карточки с несуществующим в БД id');
       } else {
         res.send({ data: card });
       }
