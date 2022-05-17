@@ -23,7 +23,6 @@ module.exports.login = (req, res, next) => {
     })
     .catch(() => {
       throw new UnauthorizedError('Неправильные почта или пароль');
-      // res.status(401).send({ message: 'Неправильные почта или пароль' });
     })
     .catch(next);
 };
@@ -35,11 +34,10 @@ module.exports.getUserInfo = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestError('Переданы некорректные данные');
+        next(new BadRequestError('Переданы некорректные данные'));
       }
       next(err);
-    })
-    .catch(next);
+    });
 };
 
 module.exports.getUsers = (req, res, next) => {
@@ -55,7 +53,6 @@ module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        // res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
         throw new NotFoundError('Запрашиваемый пользователь не найден');
       } else {
         res.status(200).send(user);
@@ -63,12 +60,9 @@ module.exports.getUserById = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestError('Переданы некорректные данные');
-      } else {
-        throw new InternalServerError('Что-то пошло не так...');
-      }
-    })
-    .catch(next);
+        next(new BadRequestError('Переданы некорректные данные'));
+      } else next(err);
+    });
 };
 
 module.exports.createUser = (req, res, next) => {
@@ -84,15 +78,11 @@ module.exports.createUser = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.code === 11000) {
-        throw new ConflictError('Пользователь с таким email уже зарегистрированн');
-        // res.status(409).send({ message: 'Пользователь с таким email уже зарегистрированн' });
+        next(new ConflictError('Пользователь с таким email уже зарегистрированн'));
       } else if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные');
-        // res.status(400).send({ message: 'Переданы некорректные данные' });
-      }
-      next(err);
-    })
-    .catch(next);
+        next(new BadRequestError('Переданы некорректные данные'));
+      } else next(err);
+    });
 };
 
 module.exports.updateAvatar = (req, res, next) => {
@@ -110,12 +100,9 @@ module.exports.updateAvatar = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные');
-      } else {
-        throw new InternalServerError('Что-то пошло не так...');
-      }
-    })
-    .catch(next);
+        next(new BadRequestError('Переданы некорректные данные'));
+      } else next(err);
+    });
 };
 
 module.exports.updateProfileInfo = (req, res, next) => {
@@ -132,10 +119,7 @@ module.exports.updateProfileInfo = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные');
-      } else {
-        throw new InternalServerError('Что-то пошло не так...');
-      }
-    })
-    .catch(next);
+        next(new BadRequestError('Переданы некорректные данные'));
+      } else next(err);
+    });
 };

@@ -1,26 +1,22 @@
 /* eslint-disable consistent-return */
 const jwt = require('jsonwebtoken');
-// const UnauthorizedError = require('../errors/unauthorized-error');
+const UnauthorizedError = require('../errors/unauthorized-error');
 
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
-  // через это не проходят автотесты!!!! через куки не работет постман
+  // eslint-disable-next-line max-len
+  // автотесты через этот метод проходили, а вот через куки не могла настроить в постмане, чтобы запросы проходили)))
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    res.status(401).send({ message: 'Необходима авторизация' });
+    throw new UnauthorizedError('Необходима авторизация');
   }
-  // if (!req.cookies.jwt) {
-  //   throw new UnauthorizedError('Необходима авторизация');
-  // }
   const token = authorization.replace('Bearer ', '');
-  // const token = req.cookies.jwt;
   let payload;
 
   try {
     payload = jwt.verify(token, 'some-secret-key');
   } catch (err) {
-    res.status(401).send({ message: 'Необходима авторизация' });
-    // throw new UnauthorizedError('Необходима авторизация');
+    throw new UnauthorizedError('Необходима авторизация');
   }
 
   req.user = payload; // записываем пейлоуд в объект запроса
