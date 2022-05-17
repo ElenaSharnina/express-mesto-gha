@@ -10,6 +10,8 @@ const {
 } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const regexLink = require('./utils/constants');
+const errorHandler = require('./errors/errorHandler');
+const NotFoundError = require('./errors/not-found-error');
 
 const { PORT = 3000 } = process.env;
 
@@ -22,7 +24,7 @@ app.use(cookieParser());
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
+    password: Joi.string().required(),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
     avatar: Joi.string().pattern(regexLink),
@@ -32,7 +34,7 @@ app.post('/signup', celebrate({
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
+    password: Joi.string().required(),
   }),
 }), login);
 
@@ -40,11 +42,12 @@ app.use('/users', auth, userRouter);
 app.use('/cards', auth, cardsRouter);
 
 // Обработка неправильного пути
-app.use('/*', (req, res) => {
-  res.status(404).send({ message: 'Страница не найдена' });
+app.use('/*', auth, () => {
+  throw new NotFoundError('Запрашиваемый ресурс не найден.');
 });
 
 app.use(errors()); // из celebrate
+app.use(errorHandler); // центральный обработчик ошибок
 
 async function main() {
   mongoose.connect('mongodb://localhost:27017/mestodb', {
