@@ -1,13 +1,11 @@
 const Card = require('../models/card');
 const BadRequestError = require('../errors/bad-request-error');
-const InternalServerError = require('../errors/internal-server-error');
 const NotFoundError = require('../errors/not-found-error');
 const ForbiddenError = require('../errors/forbidden-error');
 
 module.exports.getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch(() => { throw new InternalServerError('Что-то пошло не так...'); })
     .catch(next);
 };
 

@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const BadRequestError = require('../errors/bad-request-error');
 const ConflictError = require('../errors/conflict-error');
-const InternalServerError = require('../errors/internal-server-error');
 const NotFoundError = require('../errors/not-found-error');
 const UnauthorizedError = require('../errors/unauthorized-error');
 
@@ -43,9 +42,6 @@ module.exports.getUserInfo = (req, res, next) => {
 module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch(() => {
-      throw new InternalServerError('Что-то пошло не так...');
-    })
     .catch(next);
 };
 
