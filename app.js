@@ -12,6 +12,7 @@ const auth = require('./middlewares/auth');
 const regexLink = require('./utils/constants');
 const errorHandler = require('./errors/errorHandler');
 const NotFoundError = require('./errors/not-found-error');
+const { requestLogger, errorLogger } = require('./middlewares/Logger');
 
 const { PORT = 3000 } = process.env;
 
@@ -31,6 +32,8 @@ app.post('/signup', celebrate({
   }).unknown(true),
 }), createUser);
 
+app.use(requestLogger); // подключаем логгер запросов
+
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
@@ -46,6 +49,7 @@ app.use('/*', auth, () => {
   throw new NotFoundError('Запрашиваемый ресурс не найден.');
 });
 
+app.use(errorLogger); // подключаем логгер ошибок
 app.use(errors()); // из celebrate
 app.use(errorHandler); // центральный обработчик ошибок
 
