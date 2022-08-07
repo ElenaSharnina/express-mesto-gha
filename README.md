@@ -1,20 +1,13 @@
-[![Tests](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-13-sprint.yml) [![Tests](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-14-sprint.yml)
-# Проект Mesto фронтенд + бэкенд
+
+# Проект: Mesto бэкенд
+
+## О проекте:
+
+Проектная работа на Яндекс. Практикум, написанная Express.js
+Проект является бэкендом интерактивной страницы, куда можно добавлять фотографии, удалять их и ставить лайки, добавлена возможность регистрации и авторизации пользователей
 
 
-
-## Настройка бейджей статуса тестов
-Перед началом работы над проектом рекомендуется исправить бейджи, отражающие статус прохождения тестов.
-Для этого замените разметку бейджей на следующий фрагмент, подставив вместо `${имя_пользователя}` и `${имя_репозитория}` соответствующие значения.
-
-```
-[![Tests for sprint 13](https://github.com/ElenaSharnina/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/ElenaSharnina/express-mesto-gha/actions/workflows/tests-13-sprint.yml) 
-
-[![Tests for sprint 14](https://github.com/ElenaSharnina/express-mesto-gha/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/ElenaSharnina/express-mesto-gha/actions/workflows/tests-14-sprint.yml)
-```
-
-
-## Директории
+## Директории:
 
 `/routes` — папка с файлами роутера  
 `/controllers` — папка с файлами контроллеров пользователя и карточки   
@@ -22,7 +15,15 @@
   
 Остальные директории вспомогательные, создаются при необходимости разработчиком
 
-## Запуск проекта
+## Запуск проекта:
 
 `npm run start` — запускает сервер   
 `npm run dev` — запускает сервер с hot-reload
+
+### Стек:
+- Node.js
+- MongoDB
+
+ <img src="https://github.com/devicons/devicon/blob/master/icons/javascript/javascript-original.svg" title="JavaScript" alt="JavaScript" width="40" height="40"/>&nbsp;
+  <img src="https://github.com/devicons/devicon/blob/master/icons/mysql/mysql-original-wordmark.svg" title="MySQL"  alt="MySQL" width="40" height="40"/>&nbsp;
+  <img src="https://github.com/devicons/devicon/blob/master/icons/nodejs/nodejs-original-wordmark.svg" title="NodeJS" alt="NodeJS" width="40" height="40"/>&nbsp;
